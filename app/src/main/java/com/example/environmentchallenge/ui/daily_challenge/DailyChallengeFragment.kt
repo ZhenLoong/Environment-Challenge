@@ -12,6 +12,8 @@ import androidx.core.view.postDelayed
 import androidx.lifecycle.Observer
 
 import com.example.environmentchallenge.R
+import com.example.environmentchallenge.database.challenge.Challenge
+import kotlinx.android.synthetic.main.nav_header_main.*
 
 class DailyChallengeFragment : Fragment() {
 
@@ -45,6 +47,11 @@ class DailyChallengeFragment : Fragment() {
             {
                 doneButton.setEnabled(dailyChallengeViewModel.notDone())
                 doneButton.setBackgroundColor(dailyChallengeViewModel.color)
+
+                val newChallenge:Challenge?=dailyChallengeViewModel.changeChallenge()
+                if (newChallenge != null) {
+                    textView.text= newChallenge.challengeName+"\n\n"+newChallenge.challengeDesc
+                }
             }
 
         }

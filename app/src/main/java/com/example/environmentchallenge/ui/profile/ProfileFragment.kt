@@ -1,26 +1,27 @@
 package com.example.environmentchallenge.ui.profile
 
-import androidx.lifecycle.ViewModelProviders
+import android.os.AsyncTask
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
-import androidx.annotation.Nullable
-import androidx.core.view.isVisible
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
+import com.example.environmentchallenge.MainActivity
 
 import com.example.environmentchallenge.R
+import com.example.environmentchallenge.database.user.User
 import com.example.environmentchallenge.ui.login.LoginViewModel
 import com.facebook.AccessToken
 import com.facebook.AccessTokenTracker
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ProfileFragment : Fragment() {
 
@@ -43,7 +44,10 @@ class ProfileFragment : Fragment() {
         age = root.findViewById(R.id.age_edit)
         circleImageView = root.findViewById(R.id.profile_pic)
 
-        //loadUserProfile()
+        CoroutineScope(IO).launch {
+            getProfileData()
+        }
+
 
         return root
     }
@@ -59,8 +63,18 @@ class ProfileFragment : Fragment() {
         }
     }
 
-//    private fun loadUserProfile(){
-//
-//
-//    }
+    private suspend fun getProfileData(){
+        val user: List<User> = MainActivity.userDB.userDatabaseDAO.getAll()
+        loadProfileData(user)
+    }
+
+    private suspend fun loadProfileData(user:List<User>){
+        withContext(Main){
+            for (u in user){
+                name.setText(u.userName)
+                age.setText(u.userAge)
+                Glide.with(this@ProfileFragment).load(u.userPicUrl).into(circleImageView)
+            }
+        }
+    }
 }

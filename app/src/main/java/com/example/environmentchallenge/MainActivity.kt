@@ -1,5 +1,7 @@
 package com.example.environmentchallenge
 
+import android.app.Dialog
+import android.os.AsyncTask
 import android.os.Bundle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -25,9 +27,20 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.environmentchallenge.database.challenge.Challenge
 import com.example.environmentchallenge.database.challenge.ChallengeDatabase
+import com.example.environmentchallenge.database.friend.FriendDatabase
+import com.example.environmentchallenge.database.ranking.Ranking
+import com.example.environmentchallenge.database.ranking.RankingDatabase
+import com.example.environmentchallenge.database.user.User
+import com.example.environmentchallenge.database.user.UserDatabase
 import com.example.environmentchallenge.ui.profile.ProfileFragment
 import com.facebook.*
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONException
 import org.json.JSONObject
 import org.json.JSONObject.NULL
@@ -38,7 +51,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
-    companion object { lateinit var challengeDb: ChallengeDatabase }
+    companion object {
+        lateinit var challengeDb: ChallengeDatabase
+        lateinit var rankingDb: RankingDatabase
+        lateinit var userDB: UserDatabase
+        lateinit var friendDB:FriendDatabase
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,12 +76,25 @@ class MainActivity : AppCompatActivity() {
         challengeList.add(Challenge("C-004", "Lights Off", "Turn off unneeded lights or when leaving a room to conserve energy"))
         challengeList.add(Challenge("C-005", "No To Plastic Bags", "Refuse plastic bags or at least reuse them. Cloth bags are better."))
 
-        challengeDb = ChallengeDatabase.getInstance(this)
+        val rankingList = ArrayList<Ranking>()
+        rankingList.add(Ranking("R-001", "Harry Hong", 1000))
+        rankingList.add(Ranking("R-002", "Kimochi Khim", 829))
+        rankingList.add(Ranking("R-003", "Timothy Tai", 500))
+        rankingList.add(Ranking("R-004", "Larry Loong", 360))
 
-        challengeDb.challengeDatabaseDAO.clear()
+        userDB = UserDatabase.getInstance(this)
+        friendDB = FriendDatabase.getInstance(this)
+        challengeDb = ChallengeDatabase.getInstance(this)
+        rankingDb = RankingDatabase.getInstance(this)
+
+        if(challengeDb.challengeDatabaseDAO != null) { challengeDb.challengeDatabaseDAO.clear() }
+        if(rankingDb.rankingDatabaseDAO != null){ rankingDb.rankingDatabaseDAO.clear() }
 
         for (i in challengeList) {
             challengeDb.challengeDatabaseDAO.insert(i)
+        }
+        for(j in rankingList){
+            rankingDb.rankingDatabaseDAO.insert(j)
         }
 
         appBarConfiguration = AppBarConfiguration(
@@ -104,7 +135,7 @@ class MainActivity : AppCompatActivity() {
                 drawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED)
                 toolbar.isEnabled = true
                 toolbar.isVisible = true
-                loadUserProfile()
+                startCoroutine()
             }
         }
     }
@@ -118,10 +149,42 @@ class MainActivity : AppCompatActivity() {
             toolbar.isVisible = false
         }else{
             drawerLayout.setDrawerLockMode(LOCK_MODE_UNLOCKED)
-            loadUserProfile()
+            startCoroutine()
         }
     }
-    private fun loadUserProfile(){
+    private fun startCoroutine(){
+        CoroutineScope(IO).launch {
+            delay(1000)
+            getProfileData()
+        }
+    }
 
+    private suspend fun getProfileData() {
+        val user: List<User> = userDB.userDatabaseDAO.getAll()
+        loadProfileData(user)
+    }
+
+    private suspend fun loadProfileData(user:List<User>){
+        withContext(Main){
+            var name:TextView = findViewById(R.id.drawer_name)
+            var circleImageView:CircleImageView = findViewById(R.id.drawer_pic)
+            for (s in user) {
+                name.setText(s.userName)
+                Glide.with(this@MainActivity).load(s.userPicUrl).into(circleImageView)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        try {
+            AsyncTask.execute(kotlinx.coroutines.Runnable {
+                userDB.userDatabaseDAO.clearAll()
+                friendDB.friendDatabaseDAO.clearAll()
+            })
+        }
+        catch (e:Exception){
+            Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
+        }
     }
 }

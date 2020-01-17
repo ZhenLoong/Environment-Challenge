@@ -30,11 +30,6 @@
             app:destination="@id/nav_about_us"
             app:popUpTo="@+id/nav_daily_challenge"
             app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_nav_daily_challenge_to_nav_logout"
-            app:destination="@id/nav_logout"
-            app:popUpTo="@+id/nav_daily_challenge"
-            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/nav_weekly_challenge"
@@ -69,10 +64,5 @@
             android:id="@+id/action_loginFragment_to_nav_daily_challenge"
             app:destination="@id/nav_daily_challenge" />
     </fragment>
-    <fragment
-        android:id="@+id/nav_logout"
-        android:name="com.example.environmentchallenge.ui.logout.LogoutFragment"
-        android:label="@string/menu_logout"
-        tools:layout="@layout/fragment_logout" />
 
 </navigation>

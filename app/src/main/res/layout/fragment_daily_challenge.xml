@@ -55,15 +55,16 @@
 
     <TextView
         android:id="@+id/text_daily_challenge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="48dp"
-        android:layout_marginRight="48dp"
+        android:layout_width="310sp"
+        android:layout_height="230sp"
         android:fontFamily="casual"
+        android:textAlignment="center"
         android:textColor="@color/TextColor"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/weekly_task_text3"
+        app:layout_constraintEnd_toEndOf="@+id/weekly_task_text3"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/weekly_task_text3"
+        app:layout_constraintTop_toTopOf="@+id/weekly_task_text3"
+        app:layout_constraintVertical_bias="0.71" />
 </androidx.constraintlayout.widget.ConstraintLayout>

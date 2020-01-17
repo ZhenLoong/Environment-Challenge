@@ -15,6 +15,7 @@ import androidx.core.view.postDelayed
 import androidx.lifecycle.Observer
 
 import com.example.environmentchallenge.R
+import com.example.environmentchallenge.database.challenge.Challenge
 
 class WeeklyChallengeFragment : Fragment() {
 
@@ -36,12 +37,16 @@ class WeeklyChallengeFragment : Fragment() {
         var doneButton=root.findViewById<Button>(R.id.done_btn)
         var progressBar=root.findViewById<ProgressBar>(R.id.progress_bar)
         var progressBarText=root.findViewById<TextView>(R.id.progress_bar_text)
+        val textView: TextView = root.findViewById(R.id.text_weekly_challenge)
 
         if(savedInstanceState!=null)
         {
             weeklyChallengeViewModel.count=savedInstanceState.getInt("MyCurrentProgress")
         }
 
+        weeklyChallengeViewModel.text.observe(this, Observer {
+            textView.text = it
+        })
         progressBarText.text=weeklyChallengeViewModel.getText()
         progressBar.setProgress(weeklyChallengeViewModel.count)
         doneButton.setEnabled(weeklyChallengeViewModel.doneButton)
@@ -54,6 +59,7 @@ class WeeklyChallengeFragment : Fragment() {
             {
                 weeklyChallengeViewModel.count=0
 
+
             }
             doneButton.setEnabled(weeklyChallengeViewModel.isDone())
             doneButton.setBackgroundColor(weeklyChallengeViewModel.color)
@@ -61,6 +67,10 @@ class WeeklyChallengeFragment : Fragment() {
             {
                 doneButton.setEnabled(weeklyChallengeViewModel.notDone())
                 doneButton.setBackgroundColor(weeklyChallengeViewModel.color)
+                val newChallenge: Challenge?=weeklyChallengeViewModel.changeChallenge()
+                if (newChallenge != null) {
+                    textView.text= newChallenge.challengeName+"\n\n"+newChallenge.challengeDesc
+                }
             }
 
 
