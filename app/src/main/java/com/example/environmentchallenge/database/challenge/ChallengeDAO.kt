@@ -15,6 +15,12 @@ interface ChallengeDAO {
     fun update(challenge: Challenge)
 
     @Query("SELECT * from challenge_table WHERE challengeId = :key")
-    fun get(key: Long): Challenge?
+    fun get(key: String): Challenge?
+
+    @Query("SELECT * from challenge_table ORDER BY RANDOM() LIMIT 1")
+    fun getRandom(): Challenge?
+
+    @Query("DELETE from challenge_table")
+    fun clear()
 
 }

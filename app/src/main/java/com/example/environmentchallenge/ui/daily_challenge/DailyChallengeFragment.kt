@@ -28,8 +28,12 @@ class DailyChallengeFragment : Fragment() {
     ): View? {
         dailyChallengeViewModel = ViewModelProviders.of(this).get(DailyChallengeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_daily_challenge, container, false)
-
+        val textView: TextView = root.findViewById(R.id.text_daily_challenge)
         val doneButton=root.findViewById<Button>(R.id.done_btn2)
+
+        dailyChallengeViewModel.text.observe(this, Observer {
+            textView.text = it
+        })
 
         doneButton.setEnabled(dailyChallengeViewModel.doneButton)
         doneButton.setBackgroundColor(dailyChallengeViewModel.color)

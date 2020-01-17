@@ -14,5 +14,5 @@ interface UserDAO {
     fun update(user: User)
 
     @Query("SELECT * from user_table WHERE userId = :key")
-    fun get(key: Long): User?
+    fun get(key: String): User?
 }

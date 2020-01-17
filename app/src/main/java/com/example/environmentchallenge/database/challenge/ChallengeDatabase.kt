@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Challenge::class], version = 1, exportSchema = false)
+@Database(entities = [Challenge::class], version = 1, exportSchema = true)
 abstract class ChallengeDatabase : RoomDatabase() {
 
     abstract val challengeDatabaseDAO : ChallengeDAO
@@ -25,7 +25,7 @@ abstract class ChallengeDatabase : RoomDatabase() {
                         ChallengeDatabase::class.java,
                         "challenge_database"
                     )
-                        .fallbackToDestructiveMigration()
+                        .allowMainThreadQueries().fallbackToDestructiveMigration()
                         .build()
                     INSTANCE = instance
                 }

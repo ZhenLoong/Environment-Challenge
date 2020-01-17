@@ -6,8 +6,11 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "challenge_table")
 data class Challenge(
-    @PrimaryKey(autoGenerate = true)
-    var challengeId: Long = 0L,
+    @PrimaryKey
+    var challengeId: String,
+
+    @ColumnInfo(name="challenge_name")
+    var challengeName: String,
 
     @ColumnInfo(name="challenge_desc")
     var challengeDesc: String

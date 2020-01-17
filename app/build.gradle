@@ -3,6 +3,9 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'kotlin-kapt'
+
 apply plugin: 'com.google.gms.google-services'
 
 android {
@@ -31,6 +34,7 @@ android {
 dependencies {
     def room_version = "2.2.3"
 
+    kapt "androidx.room:room-compiler:2.0.0"
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
 

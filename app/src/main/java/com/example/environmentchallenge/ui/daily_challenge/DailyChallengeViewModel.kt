@@ -4,10 +4,13 @@ import android.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.environmentchallenge.MainActivity
+import kotlin.random.Random
 
 class DailyChallengeViewModel : ViewModel() {
+    val c = MainActivity.challengeDb.challengeDatabaseDAO.getRandom()
     private val _text = MutableLiveData<String>().apply {
-        value = "This is daily challenge Fragment"
+        value = "Challenge Name: " + c?.challengeName + "\n" + "Description: " + c?.challengeDesc
     }
     val text: LiveData<String> = _text
     var doneButton:Boolean=true
@@ -28,4 +31,6 @@ class DailyChallengeViewModel : ViewModel() {
         color= Color.WHITE
         return doneButton
     }
+
+
 }
